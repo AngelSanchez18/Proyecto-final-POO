@@ -37,7 +37,8 @@ public class Ciclo {
         if (anioEscolar > 2027 || anioEscolar < 2000) {
             throw new IllegalArgumentException("El anioEscolar es obligatorio.");
         }
-        this.anioEscolar = anioEscolar;    }
+        this.anioEscolar = anioEscolar;
+    }
 
     public LocalDate getFechaInicio() {
         return fechaInicio;
@@ -62,9 +63,6 @@ public class Ciclo {
     public void setEstado(String estado) {
         this.estado = estado.trim();
     }
-
-
-
 }
 
 

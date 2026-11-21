@@ -7,16 +7,16 @@ public abstract class Persona{
     protected String nombre;
     protected String apellidos;
     protected LocalDate fechaNacimiento;
-    protected int  telefono;
+    protected String telefono;
     protected String direccion;
 
 
-    public Persona(int ID, String nombre, String apellidos, LocalDate fechaNacimiento, int telefono, String direccion) {
+    public Persona(int ID, String nombre, String apellidos, LocalDate fechaNacimiento, String telefono, String direccion) {
         this.ID = ID;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.fechaNacimiento = fechaNacimiento;
-        this.telefono = telefono;
+        setTelefono(telefono);
         this.direccion = direccion;
     }
 
@@ -61,11 +61,14 @@ public abstract class Persona{
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
+        if (telefono == null || telefono.isEmpty() || telefono.length() != 10) {
+            throw new IllegalArgumentException("Número de teléfono inválido. Debe contener 10 dígitos.");
+        }
         this.telefono = telefono;
     }
 
