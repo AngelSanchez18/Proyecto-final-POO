@@ -8,11 +8,18 @@ import personas.Estudiante;
 public class Grupo {
     private final int idGrupo;
     private final char letra;
+    private final Turno turno;
     private final int capacidad;
     private final ProgramaEducativo programaEducativo;
     private final List<Estudiante> estudiantes = new ArrayList<>();
+    private boolean bloqueado;
 
     public Grupo(int idGrupo, char letra, int capacidad, ProgramaEducativo programaEducativo) {
+        this(idGrupo, letra, capacidad, programaEducativo, Turno.MATUTINO);
+    }
+
+    public Grupo(int idGrupo, char letra, int capacidad, ProgramaEducativo programaEducativo, Turno turno) {
+        this.turno = Objects.requireNonNull(turno, "El turno es obligatorio.");
         if (capacidad <= 0) {
             throw new IllegalArgumentException("La capacidad debe ser mayor que cero.");
         }
@@ -23,6 +30,7 @@ public class Grupo {
     }
 
     public void agregarEstudiante(Estudiante estudiante) {
+        validarEditable();
         Objects.requireNonNull(estudiante, "El estudiante no puede ser nulo.");
         for (Estudiante inscrito : estudiantes) {
             if (inscrito.getId() == estudiante.getId()) {
@@ -36,7 +44,20 @@ public class Grupo {
     }
 
     public boolean retirarEstudiante(int idEstudiante) {
+        validarEditable();
         return estudiantes.removeIf(estudiante -> estudiante.getId() == idEstudiante);
+    }
+
+    /** Impide cambiar la inscripcion o los cursos de un ciclo terminado. */
+    public void bloquear() {
+        bloqueado = true;
+        programaEducativo.getCursos().forEach(Curso::bloquear);
+    }
+
+    private void validarEditable() {
+        if (bloqueado) {
+            throw new IllegalStateException("El grupo pertenece a un ciclo terminado.");
+        }
     }
 
     public List<Estudiante> consultarEstudiantes() {
@@ -57,6 +78,10 @@ public class Grupo {
 
     public char getLetra() {
         return letra;
+    }
+
+    public Turno getTurno() {
+        return turno;
     }
 
     public int getCapacidad() {
