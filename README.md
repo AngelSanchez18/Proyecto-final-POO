@@ -48,8 +48,9 @@ Los cursos pendientes aparecen sin nota y no participan en el promedio. Las bole
 copias inmutables: una boleta ya emitida no cambia al registrar nuevas calificaciones.
 El maestro de un resultado registrado se conserva aunque después se reasigne el curso.
 
-**Los datos se almacenan únicamente en memoria y se pierden al cerrar el programa.**
-Los planes iniciales de `App.crearCiclo` son ejemplos editables, no un plan oficial.
+---
+Los datos se almacenan únicamente en memoria y se pierden al cerrar el programa.**
+ Los planes iniciales de `App.crearCiclo` son ejemplos editables, no un plan oficial.
 ---
 
 ## Diagrama de Clases UML
@@ -86,6 +87,7 @@ Los planes iniciales de `App.crearCiclo` son ejemplos editables, no un plan ofic
    ```
    En Linux/macOS, cambiar `;` por `:` en el classpath de compilación de las pruebas.
    La versión incluida de JUnit requiere Java 17 o superior.
+---
 
 El menú inicia en el ciclo 2026 con los grupos 1A, 2A y 3A del turno matutino.
 Primero registra maestros y alumnos; después asigna maestros a los cursos y captura notas.

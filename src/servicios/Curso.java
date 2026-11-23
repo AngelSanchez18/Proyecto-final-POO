@@ -1,5 +1,6 @@
 package servicios;
 
+// CLASE ABSTRACTA: Define estructura común y obliga a las subclases a detallar su tipo de curso.
 public abstract class Curso {
     private int id;
     private String nombre;
@@ -7,10 +8,18 @@ public abstract class Curso {
     private boolean bloqueado;
 
     protected Curso(int id, String nombre, int capacidad) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre del curso es obligatorio.");
+        }
+        if (capacidad <= 0) {
+            throw new IllegalArgumentException("La capacidad del curso debe ser mayor a cero.");
+        }
         this.id = id;
         this.nombre = nombre;
         this.capacidad = capacidad;
     }
+
+    public abstract String describirCurso();
 
     public int getId() {
         return id;
