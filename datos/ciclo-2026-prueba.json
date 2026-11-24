@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "idCiclo": 1,
+  "anioEscolar": 2026,
+  "fechaInicio": "2026-08-01",
+  "fechaFin": "2027-07-31",
+  "estado": "CURSO",
+  "maestros": [
+    {"persona": {"id": 1, "nombre": "Ana", "apellidos": "Lopez", "fechaNacimiento": "1980-01-10", "telefono": "5551230001", "direccion": "Calle Escuela 1"}, "especialidad": "Espanol", "correo": "ana@example.com"},
+    {"persona": {"id": 2, "nombre": "Pedro", "apellidos": "Garcia", "fechaNacimiento": "1985-03-15", "telefono": "5551230002", "direccion": "Calle Escuela 2"}, "especialidad": "Matematicas", "correo": "pedro@example.com"},
+    {"persona": {"id": 3, "nombre": "Maria", "apellidos": "Torres", "fechaNacimiento": "1982-06-20", "telefono": "5551230003", "direccion": "Calle Escuela 3"}, "especialidad": "Ciencias", "correo": "maria@example.com"},
+    {"persona": {"id": 4, "nombre": "Carlos", "apellidos": "Ruiz", "fechaNacimiento": "1988-09-25", "telefono": "5551230004", "direccion": "Calle Escuela 4"}, "especialidad": "Tecnologia", "correo": "carlos@example.com"}
+  ],
+  "grupos": [
+    {
+      "id": 1, "grado": 1, "letra": "A", "turno": "MATUTINO", "capacidad": 30,
+      "cursos": [
+        {"id": 1, "tipo": "MATERIA", "nombre": "Espanol 1", "capacidad": 30, "idDocente": 1},
+        {"id": 2, "tipo": "MATERIA", "nombre": "Matematicas 1", "capacidad": 30, "idDocente": 2},
+        {"id": 3, "tipo": "MATERIA", "nombre": "Ciencias 1", "capacidad": 30, "idDocente": 3},
+        {"id": 4, "tipo": "TALLER", "nombre": "Tecnologia 1", "capacidad": 30, "idDocente": 4}
+      ],
+      "alumnos": [{
+        "persona": {"id": 101, "nombre": "Luis", "apellidos": "Perez", "fechaNacimiento": "2013-02-01", "telefono": "5551230101", "direccion": "Calle Alumno 1"},
+        "matricula": "2026000101", "curp": "PEPL130201HDFRRSA1",
+        "calificaciones": [
+          {"idCurso": 1, "nombreCurso": "Espanol 1", "idDocente": 1, "nombreDocente": "Ana Lopez", "nota": 9, "estado": "APROBADO"},
+          {"idCurso": 2, "nombreCurso": "Matematicas 1", "idDocente": 2, "nombreDocente": "Pedro Garcia", "nota": 8, "estado": "APROBADO"},
+          {"idCurso": 3, "nombreCurso": "Ciencias 1", "idDocente": 3, "nombreDocente": "Maria Torres", "nota": 10, "estado": "APROBADO"},
+          {"idCurso": 4, "nombreCurso": "Tecnologia 1", "idDocente": 4, "nombreDocente": "Carlos Ruiz", "nota": 9, "estado": "APROBADO"}
+        ]
+      }]
+    },
+    {
+      "id": 2, "grado": 2, "letra": "A", "turno": "MATUTINO", "capacidad": 30,
+      "cursos": [
+        {"id": 1, "tipo": "MATERIA", "nombre": "Espanol 2", "capacidad": 30, "idDocente": 1},
+        {"id": 2, "tipo": "MATERIA", "nombre": "Matematicas 2", "capacidad": 30, "idDocente": 2},
+        {"id": 3, "tipo": "MATERIA", "nombre": "Ciencias 2", "capacidad": 30, "idDocente": 3},
+        {"id": 4, "tipo": "TALLER", "nombre": "Tecnologia 2", "capacidad": 30, "idDocente": 4}
+      ],
+      "alumnos": [{
+        "persona": {"id": 102, "nombre": "Sofia", "apellidos": "Hernandez", "fechaNacimiento": "2012-04-03", "telefono": "5551230102", "direccion": "Calle Alumno 2"},
+        "matricula": "2026000102", "curp": "HERS120403MDFRNFA2",
+        "calificaciones": [
+          {"idCurso": 1, "nombreCurso": "Espanol 2", "idDocente": 1, "nombreDocente": "Ana Lopez", "nota": 7, "estado": "APROBADO"},
+          {"idCurso": 2, "nombreCurso": "Matematicas 2", "idDocente": 2, "nombreDocente": "Pedro Garcia", "nota": 5, "estado": "REPROBADO"},
+          {"idCurso": 3, "nombreCurso": "Ciencias 2", "idDocente": 3, "nombreDocente": "Maria Torres", "nota": 8, "estado": "APROBADO"},
+          {"idCurso": 4, "nombreCurso": "Tecnologia 2", "idDocente": 4, "nombreDocente": "Carlos Ruiz", "nota": 10, "estado": "APROBADO"}
+        ]
+      }]
+    },
+    {
+      "id": 3, "grado": 1, "letra": "A", "turno": "VESPERTINO", "capacidad": 30,
+      "cursos": [
+        {"id": 1, "tipo": "MATERIA", "nombre": "Espanol 1", "capacidad": 30, "idDocente": 1},
+        {"id": 2, "tipo": "MATERIA", "nombre": "Matematicas 1", "capacidad": 30, "idDocente": 2},
+        {"id": 3, "tipo": "MATERIA", "nombre": "Ciencias 1", "capacidad": 30, "idDocente": 3},
+        {"id": 4, "tipo": "TALLER", "nombre": "Tecnologia 1", "capacidad": 30, "idDocente": 4}
+      ],
+      "alumnos": [{
+        "persona": {"id": 103, "nombre": "Diego", "apellidos": "Ramirez", "fechaNacimiento": "2013-07-05", "telefono": "5551230103", "direccion": "Calle Alumno 3"},
+        "matricula": "2026000103", "curp": "RAMD130705HDFMGGA3",
+        "calificaciones": [
+          {"idCurso": 1, "nombreCurso": "Espanol 1", "idDocente": 1, "nombreDocente": "Ana Lopez", "nota": 6, "estado": "APROBADO"},
+          {"idCurso": 2, "nombreCurso": "Matematicas 1", "idDocente": 2, "nombreDocente": "Pedro Garcia", "nota": 7, "estado": "EXTRAORDINARIO"},
+          {"idCurso": 3, "nombreCurso": "Ciencias 1", "idDocente": 3, "nombreDocente": "Maria Torres", "nota": 8, "estado": "APROBADO"},
+          {"idCurso": 4, "nombreCurso": "Tecnologia 1", "idDocente": 4, "nombreDocente": "Carlos Ruiz", "nota": 9, "estado": "APROBADO"}
+        ]
+      }]
+    },
+    {
+      "id": 4, "grado": 3, "letra": "A", "turno": "VESPERTINO", "capacidad": 30,
+      "cursos": [
+        {"id": 1, "tipo": "MATERIA", "nombre": "Espanol 3", "capacidad": 30, "idDocente": 1},
+        {"id": 2, "tipo": "MATERIA", "nombre": "Matematicas 3", "capacidad": 30, "idDocente": 2},
+        {"id": 3, "tipo": "MATERIA", "nombre": "Ciencias 3", "capacidad": 30, "idDocente": 3},
+        {"id": 4, "tipo": "TALLER", "nombre": "Tecnologia 3", "capacidad": 30, "idDocente": 4}
+      ],
+      "alumnos": [{
+        "persona": {"id": 104, "nombre": "Valeria", "apellidos": "Sanchez", "fechaNacimiento": "2011-10-07", "telefono": "5551230104", "direccion": "Calle Alumno 4"},
+        "matricula": "2026000104", "curp": "SACV111007MDFNLRA4",
+        "calificaciones": [
+          {"idCurso": 1, "nombreCurso": "Espanol 3", "idDocente": 1, "nombreDocente": "Ana Lopez", "nota": 10, "estado": "APROBADO"},
+          {"idCurso": 2, "nombreCurso": "Matematicas 3", "idDocente": 2, "nombreDocente": "Pedro Garcia", "nota": 9, "estado": "APROBADO"},
+          {"idCurso": 3, "nombreCurso": "Ciencias 3", "idDocente": 3, "nombreDocente": "Maria Torres", "nota": 9, "estado": "APROBADO"},
+          {"idCurso": 4, "nombreCurso": "Tecnologia 3", "idDocente": 4, "nombreDocente": "Carlos Ruiz", "nota": 10, "estado": "APROBADO"}
+        ]
+      }]
+    }
+  ]
+}

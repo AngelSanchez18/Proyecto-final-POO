@@ -13,14 +13,21 @@ public final class Calificacion {
     private final EstadoCalificacion estado;
 
     public Calificacion(Curso curso, Docente docente, Double nota, EstadoCalificacion estado) {
-        Objects.requireNonNull(curso, "El curso es obligatorio.");
+        this(Objects.requireNonNull(curso, "El curso es obligatorio.").getId(), curso.getNombre(),
+                docente == null ? null : docente.getId(),
+                docente == null ? "Sin asignar" : docente.getNombre() + " " + docente.getApellidos(), nota, estado);
+    }
+
+    /** Reconstruye los datos historicos conservados en un archivo. */
+    public Calificacion(int idCurso, String nombreCurso, Integer idDocente, String nombreDocente,
+            Double nota, EstadoCalificacion estado) {
         this.estado = Objects.requireNonNull(estado, "El estado es obligatorio.");
         if (estado == EstadoCalificacion.NO_CALIFICADO) {
             if (nota != null) {
                 throw new IllegalArgumentException("Un curso no calificado no puede tener nota.");
             }
         } else {
-            Objects.requireNonNull(docente, "Se necesita el maestro que impartio el curso.");
+            Objects.requireNonNull(idDocente, "Se necesita el maestro que impartio el curso.");
             if (nota == null || !Double.isFinite(nota) || nota < 0 || nota > 10) {
                 throw new IllegalArgumentException("La nota debe estar entre 0 y 10.");
             }
@@ -29,10 +36,10 @@ public final class Calificacion {
                 throw new IllegalArgumentException("La nota no corresponde al estado.");
             }
         }
-        this.idCurso = curso.getId();
-        this.nombreCurso = curso.getNombre();
-        this.idDocente = docente == null ? null : docente.getId();
-        this.nombreDocente = docente == null ? "Sin asignar" : docente.getNombre() + " " + docente.getApellidos();
+        this.idCurso = idCurso;
+        this.nombreCurso = Objects.requireNonNull(nombreCurso, "El nombre del curso es obligatorio.");
+        this.idDocente = idDocente;
+        this.nombreDocente = Objects.requireNonNull(nombreDocente, "El nombre del maestro es obligatorio.");
         this.nota = nota;
     }
 

@@ -1,6 +1,9 @@
 import ciclo.Ciclo;
 import ciclo.EstadoCiclo;
 import java.time.LocalDate;
+import java.nio.file.Path;
+import java.io.IOException;
+import persistencia.CicloJson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,14 +15,16 @@ public class App {
     public static void main(String[] args) {
         Departamento departamento = new Departamento();
         List<Ciclo> historial = new ArrayList<>();
-        Ciclo ciclo = crearCiclo(1, 2026, departamento);
-        historial.add(ciclo);
         try (Scanner entrada = new Scanner(System.in)) {
+            System.out.println("Seleccione el ciclo escolar en el que desea trabajar.");
+            Ciclo ciclo = solicitarNuevoCiclo(entrada, historial, departamento);
             while (true) {
-                System.out.println("\nCiclo " + ciclo.getAnioEscolar() + " | Estado: " + ciclo.getEstado()
+                departamento = ciclo.getDepartamento();
+                System.out.println("\nCiclo " + periodo(ciclo) + " | Estado: " + ciclo.getEstado()
                         + " | 1. Agregar maestro | 2. Inscribir alumno | 3. Asignar maestro"
                         + "\n4. Calificar | 5. Boleta | 6. Consultar grupos y maestros"
-                        + "\n7. Nuevo ciclo | 8. Seleccionar ciclo anterior | 9. Terminar ciclo | 0. Salir");
+                        + "\n7. Nuevo ciclo | 8. Seleccionar ciclo | 9. Terminar ciclo"
+                        + "\n10. Guardar ciclo JSON | 11. Cargar ciclo JSON | 0. Salir");
                 try {
                     int opcion = numero(entrada, "Opcion");
                     switch (opcion) {
@@ -32,7 +37,7 @@ public class App {
                                     texto(entrada, "Especialidad"), texto(entrada, "Correo")));
                             break;
                         case 2:
-                            int grupo = numero(entrada, "ID del grupo (1, 2 o 3)");
+                            int grupo = numero(entrada, "ID del grupo (consulte la opcion 6)");
                             ciclo.inscribirEstudiante(grupo, new Estudiante(numero(entrada, "ID del alumno"),
                                     texto(entrada, "Nombre"), texto(entrada, "Apellidos"),
                                     LocalDate.parse(texto(entrada, "Nacimiento (AAAA-MM-DD)")),
@@ -73,16 +78,12 @@ public class App {
                             }
                             break;
                         case 7:
-                            int anio = numero(entrada, "Anio de inicio del nuevo ciclo");
-                            if (historial.stream().anyMatch(c -> c.getAnioEscolar() == anio)) {
-                                throw new IllegalArgumentException("Ya existe un ciclo para ese anio.");
-                            }
-                            ciclo = crearCiclo(historial.size() + 1, anio, departamento);
-                            historial.add(ciclo);
+                            ciclo = solicitarNuevoCiclo(entrada, historial, departamento);
                             break;
                         case 8:
                             for (Ciclo c : historial) {
-                                System.out.println("Ciclo " + c.getIdCiclo() + ": " + c.getAnioEscolar());
+                                System.out.println("Ciclo " + c.getIdCiclo() + ": " + periodo(c)
+                                        + " | Estado: " + c.getEstado());
                             }
                             int id = numero(entrada, "ID del ciclo a seleccionar");
                             ciclo = historial.stream().filter(c -> c.getIdCiclo() == id).findFirst()
@@ -94,14 +95,65 @@ public class App {
                                 System.out.println("Ciclo terminado. Solo se permiten consultas.");
                             }
                             break;
+                        case 10:
+                            CicloJson.guardar(ciclo, Path.of(texto(entrada, "Ruta del archivo JSON a guardar")));
+                            System.out.println("Ciclo guardado correctamente.");
+                            break;
+                        case 11:
+                            Ciclo cargado = CicloJson.cargar(Path.of(texto(entrada, "Ruta del archivo JSON a cargar")));
+                            boolean conflicto = historial.stream().anyMatch(c -> c.getIdCiclo() == cargado.getIdCiclo()
+                                    || c.getAnioEscolar() == cargado.getAnioEscolar());
+                            if (conflicto) {
+                                if (!texto(entrada, "Ya existe ese ciclo o ID. Reemplazar en memoria? (s/n)")
+                                        .equalsIgnoreCase("s")) break;
+                                historial.removeIf(c -> c.getIdCiclo() == cargado.getIdCiclo()
+                                        || c.getAnioEscolar() == cargado.getAnioEscolar());
+                            }
+                            historial.add(cargado);
+                            ciclo = cargado;
+                            System.out.println("Ciclo cargado correctamente.");
+                            break;
                         default:
                             System.out.println("Opcion no valida.");
                     }
-                } catch (IllegalArgumentException | IllegalStateException | java.time.DateTimeException e) {
+                } catch (IOException | IllegalArgumentException | IllegalStateException | java.time.DateTimeException e) {
                     System.out.println("No se pudo realizar la operacion: " + e.getMessage());
                 }
             }
         }
+    }
+
+    private static Ciclo solicitarNuevoCiclo(Scanner entrada, List<Ciclo> historial,
+            Departamento departamento) {
+        while (true) {
+            try {
+                String seleccion = texto(entrada,
+                        "Anio de inicio del ciclo escolar (ejemplo: 2026 para 2026-2027), o 'json' para cargar");
+                if (seleccion.equalsIgnoreCase("json")) {
+                    Ciclo cargado = CicloJson.cargar(Path.of(texto(entrada, "Ruta del archivo JSON a cargar")));
+                    if (historial.stream().anyMatch(c -> c.getIdCiclo() == cargado.getIdCiclo()
+                            || c.getAnioEscolar() == cargado.getAnioEscolar())) {
+                        throw new IllegalArgumentException("El ciclo o ID ya existe. Use la opcion 11 para reemplazarlo.");
+                    }
+                    historial.add(cargado);
+                    return cargado;
+                }
+                int anio = Integer.parseInt(seleccion);
+                if (historial.stream().anyMatch(c -> c.getAnioEscolar() == anio)) {
+                    throw new IllegalArgumentException("Ya existe un ciclo para ese anio. Use Seleccionar ciclo.");
+                }
+                int id = historial.stream().mapToInt(Ciclo::getIdCiclo).max().orElse(0) + 1;
+                Ciclo ciclo = crearCiclo(id, anio, departamento);
+                historial.add(ciclo);
+                return ciclo;
+            } catch (IOException | IllegalArgumentException | java.time.DateTimeException e) {
+                System.out.println("No se pudo crear el ciclo: " + e.getMessage());
+            }
+        }
+    }
+
+    private static String periodo(Ciclo ciclo) {
+        return ciclo.getAnioEscolar() + "-" + ciclo.getFechaFin().getYear();
     }
 
     /** Planes iniciales de ejemplo: pueden sustituirse por los de la escuela. */

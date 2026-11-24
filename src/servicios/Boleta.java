@@ -17,13 +17,20 @@ public final class Boleta {
 
     public Boleta(int idCiclo, int anioEscolar, Estudiante estudiante, Grupo grupo,
             List<Calificacion> calificaciones) {
+        this(idCiclo, anioEscolar, estudiante.getNombre() + " " + estudiante.getApellidos(),
+                estudiante.getMatricula(), grupo.getGrado(), grupo.getLetra(), grupo.getTurno(), calificaciones);
+    }
+
+    /** Reconstruye una boleta final sin consultar datos personales que pudieron cambiar. */
+    public Boleta(int idCiclo, int anioEscolar, String nombreEstudiante, String matricula,
+            int grado, char grupo, Turno turno, List<Calificacion> calificaciones) {
         this.idCiclo = idCiclo;
         this.anioEscolar = anioEscolar;
-        this.nombreEstudiante = estudiante.getNombre() + " " + estudiante.getApellidos();
-        this.matricula = estudiante.getMatricula();
-        this.grado = grupo.getGrado();
-        this.grupo = grupo.getLetra();
-        this.turno = grupo.getTurno();
+        this.nombreEstudiante = java.util.Objects.requireNonNull(nombreEstudiante);
+        this.matricula = java.util.Objects.requireNonNull(matricula);
+        this.grado = grado;
+        this.grupo = grupo;
+        this.turno = java.util.Objects.requireNonNull(turno);
         this.calificaciones = List.copyOf(calificaciones);
     }
 

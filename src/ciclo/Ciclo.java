@@ -24,7 +24,7 @@ public class Ciclo {
 
     private final Map<Integer, Boleta> boletasFinales = new LinkedHashMap<>();
 
-    /** Permite configurar los tres grupos posteriormente mediante agregarGrupo. */
+    /** Permite configurar los grupos posteriormente mediante agregarGrupo. */
     public Ciclo(int idCiclo, int anioEscolar, LocalDate fechaInicio, LocalDate fechaFin, EstadoCiclo estado) {
         setIdCiclo(idCiclo);
         setAnioEscolar(anioEscolar);
@@ -39,8 +39,8 @@ public class Ciclo {
         this(idCiclo, anioEscolar, fechaInicio, fechaFin, EstadoCiclo.CURSO);
         Objects.requireNonNull(estado, "El estado es obligatorio.");
         this.departamento = Objects.requireNonNull(departamento, "El departamento es obligatorio.");
-        if (grupos.size() != 3) {
-            throw new IllegalArgumentException("El ciclo necesita un grupo por cada uno de los tres grados.");
+        if (grupos.isEmpty()) {
+            throw new IllegalArgumentException("El ciclo necesita al menos un grupo.");
         }
         grupos.forEach(this::agregarGrupo);
         setEstado(estado);
@@ -50,8 +50,9 @@ public class Ciclo {
         validarEnCurso();
         Objects.requireNonNull(grupo, "El grupo es obligatorio.");
         if (grupos.containsKey(grupo.getIdGrupo())
-                || grupos.values().stream().anyMatch(g -> g.getGrado() == grupo.getGrado())) {
-            throw new IllegalArgumentException("Solo puede existir un grupo por grado y los IDs deben ser unicos.");
+                || grupos.values().stream().anyMatch(g -> g.getGrado() == grupo.getGrado()
+                        && g.getLetra() == grupo.getLetra() && g.getTurno() == grupo.getTurno())) {
+            throw new IllegalArgumentException("El ID y la combinacion grado, letra y turno deben ser unicos.");
         }
         for (Estudiante estudiante : grupo.consultarEstudiantes()) {
             if (estaInscrito(estudiante.getId())) {
@@ -126,6 +127,23 @@ public class Ciclo {
         Docente docente = consultarDocente(grupo.getIdGrupo(), idCurso);
         Calificacion calificacion = new Calificacion(curso, docente, nota, estado);
         calificaciones.computeIfAbsent(idEstudiante, id -> new LinkedHashMap<>()).put(idCurso, calificacion);
+    }
+
+    public List<Calificacion> consultarCalificacionesRegistradas(int idEstudiante) {
+        grupoDelEstudiante(idEstudiante);
+        return List.copyOf(calificaciones.getOrDefault(idEstudiante, Map.of()).values());
+    }
+
+    /** Restaura un resultado inmutable sin cambiar la asignacion actual del curso. */
+    public void restaurarCalificacion(int idEstudiante, Calificacion calificacion) {
+        validarEnCurso();
+        Grupo grupo = grupoDelEstudiante(idEstudiante);
+        grupo.getProgramaEducativo().buscarCurso(calificacion.getIdCurso());
+        if (calificacion.getIdDocente() != null) {
+            departamento.buscarDocente(calificacion.getIdDocente());
+        }
+        calificaciones.computeIfAbsent(idEstudiante, id -> new LinkedHashMap<>())
+                .put(calificacion.getIdCurso(), calificacion);
     }
 
     public Boleta generarBoleta(int idEstudiante) {
@@ -212,6 +230,24 @@ public class Ciclo {
         boletasFinales.putAll(finales);
         grupos.values().forEach(Grupo::bloquear);
         estado = EstadoCiclo.TERMINADO;
+    }
+
+    public Map<Integer, Boleta> consultarBoletasFinales() {
+        return Map.copyOf(boletasFinales);
+    }
+
+    /** Cierra una carga conservando las copias historicas originales. */
+    public void terminarConBoletas(Map<Integer, Boleta> finales) {
+        validarEnCurso();
+        Map<Integer, Boleta> copia = Map.copyOf(finales);
+        int alumnos = grupos.values().stream().mapToInt(g -> g.consultarEstudiantes().size()).sum();
+        if (copia.size() != alumnos || copia.values().stream().anyMatch(b ->
+                b.getIdCiclo() != idCiclo || b.getAnioEscolar() != anioEscolar)) {
+            throw new IllegalArgumentException("Las boletas finales no corresponden al ciclo.");
+        }
+        terminar();
+        boletasFinales.clear();
+        boletasFinales.putAll(copia);
     }
 
     private void validarEnCurso() {

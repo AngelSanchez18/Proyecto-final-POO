@@ -37,14 +37,18 @@ public class Test {
     }
 
     @org.junit.jupiter.api.Test
-    void exigeTresGradosUnicos() {
+    void validaIdentidadDeGruposYPermiteVariosPorGrado() {
         Departamento departamento = departamento();
         assertThrows(IllegalArgumentException.class, () -> new Ciclo(1, 2026,
                 LocalDate.of(2026, 8, 1), LocalDate.of(2027, 7, 31), EstadoCiclo.CURSO, departamento,
                 List.of(grupo(1, 1), grupo(2, 1), grupo(3, 3))));
         assertThrows(IllegalArgumentException.class, () -> new Ciclo(1, 2026,
                 LocalDate.of(2026, 8, 1), LocalDate.of(2027, 7, 31), EstadoCiclo.CURSO, departamento,
-                List.of(grupo(1, 1))));
+                List.of()));
+        Ciclo varios = ciclo(departamento);
+        varios.agregarGrupo(new Grupo(4, 'A', 30, new ProgramaEducativo(1,
+                List.of(new Materia(1, "Matematicas", 30))), Turno.VESPERTINO));
+        assertEquals(4, varios.consultarGrupos().size());
         assertEquals(3, ciclo(departamento).consultarGrupos().size());
     }
 
